@@ -106,23 +106,32 @@ public class EmailMessageClient_SMTP extends EmailMessageClient {
                 }
             }
             // recipient to
-            try {
-                simpleMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(emailMessage.getTo()));
-            } catch (Exception e) {
-                logger.error("[SEND][ADD_TO]", e);
-            }
+            Optional.ofNullable(emailMessage.getTo()).map(to -> {
+                try {
+                    simpleMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+                } catch (Exception e) {
+                    logger.error("[SEND][ADD_TO]", e);
+                }
+                return null;
+            });
             // recipient cc
-            try {
-                simpleMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(emailMessage.getCc()));
-            } catch (Exception e) {
-                logger.error("[SEND][ADD_CC]", e);
-            }
+            Optional.ofNullable(emailMessage.getCc()).map(cc -> {
+                try {
+                    simpleMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+                } catch (Exception e) {
+                    logger.error("[SEND][ADD_CC]", e);
+                }
+                return null;
+            });
             // recipient bcc
-            try {
-                simpleMessage.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(emailMessage.getBcc()));
-            } catch (Exception e) {
-                logger.error("[SEND][ADD_BCC]", e);
-            }
+            Optional.ofNullable(emailMessage.getBcc()).map(bcc -> {
+                try {
+                    simpleMessage.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc));
+                } catch (Exception e) {
+                    logger.error("[SEND][ADD_BCC]", e);
+                }
+                return null;
+            });
             // send
             Transport.send(simpleMessage);
         } catch (Exception e) {
