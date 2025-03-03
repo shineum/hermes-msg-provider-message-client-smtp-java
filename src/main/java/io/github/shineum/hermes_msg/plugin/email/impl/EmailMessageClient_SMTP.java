@@ -93,11 +93,14 @@ public class EmailMessageClient_SMTP extends EmailMessageClient {
                         mp.addBodyPart(mbp);
                     }
                     attachments.forEach(attachment -> {
-                        try {
-                            mp.addBodyPart(parseAttachment(attachment));
-                        } catch (Exception e) {
-                            logger.error("[SEND][ADD_BODYPART]", e);
-                        }
+                        Optional.ofNullable(parseAttachment(attachment)).map(mbp -> {
+                            try {
+                                mp.addBodyPart(mbp);
+                            } catch (Exception e) {
+                                logger.error("[SEND][ADD_BODYPART]", e);
+                            }
+                            return null;
+                        });
                     });
                     simpleMessage.setContent(mp);
                 } else {
